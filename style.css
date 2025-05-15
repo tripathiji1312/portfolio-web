@@ -879,6 +879,15 @@ a:hover {
     .fullscreen-section {
         padding: 4rem 2.8rem 2rem 5%;
     }
+    .cursor-dot,
+    .cursor-outline {
+        display: none;
+    }
+    
+    body {
+        cursor: auto;
+            /* Show default system cursor */
+    }
 }
 
 @media (max-width: 480px) {
