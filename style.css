@@ -18,7 +18,7 @@ body {
     cursor: none;
 }
 
-/* Custom Cursor */
+/* Custom Cursor - Restored Original Design */
 .cursor-dot {
     width: 8px;
     height: 8px;
@@ -74,7 +74,23 @@ h2.section-title {
     position: relative;
     display: inline-block;
     padding-bottom: 0.5rem;
+    overflow: hidden;
+    /* For reveal animations */
 }
+
+h2.section-title .title-text {
+    /* Wrapper for text animation */
+    display: inline-block;
+    transform: translateY(100%);
+    opacity: 0;
+    transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) 0.2s, opacity 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) 0.2s;
+}
+
+.fullscreen-section.visible h2.section-title .title-text {
+    transform: translateY(0);
+    opacity: 1;
+}
+
 
 h2.section-title span {
     font-size: 0.8em;
@@ -83,7 +99,15 @@ h2.section-title span {
     display: block;
     margin-bottom: 0.2em;
     opacity: 0.8;
+    transform: translateY(100%);
+    transition: transform 0.7s cubic-bezier(0.165, 0.84, 0.44, 1), opacity 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
+
+.fullscreen-section.visible h2.section-title span {
+    transform: translateY(0);
+    opacity: 0.8;
+}
+
 
 h2.section-title.alternate-title {
     border-bottom: none;
@@ -94,12 +118,20 @@ h2.section-title::after {
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 60px;
+    width: 0;
+    /* Start with 0 width */
     height: 4px;
     background-color: #00ff99;
-    transition: width 0.4s ease;
+    transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1) 0.5s;
+    /* Delayed transition */
 }
 
+.fullscreen-section.visible h2.section-title::after {
+    width: 60px;
+    /* Animate to original width */
+}
+
+/* Restored original hover width for title line */
 h2.section-title:hover::after {
     width: 100px;
 }
@@ -112,7 +144,20 @@ h2.centered-title {
 h2.centered-title::after {
     margin-left: auto;
     margin-right: auto;
+    left: 50%;
+    /* Center the line */
+    transform: translateX(-50%);
 }
+
+.fullscreen-section.visible h2.centered-title::after {
+    width: 60px;
+}
+
+h2.centered-title:hover::after {
+    width: 100px;
+    /* Restored hover width for centered title line */
+}
+
 
 h3 {
     font-size: clamp(1.4rem, 3vw, 1.8rem);
@@ -124,6 +169,14 @@ h3.sub-section-title {
     color: #00ff99;
     font-weight: 700;
     margin-bottom: 1.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out 0.4s, transform 0.6s ease-out 0.4s;
+}
+
+.fullscreen-section.visible h3.sub-section-title {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 p {
@@ -131,22 +184,67 @@ p {
     color: #cccccc;
     margin-bottom: 1.5rem;
     font-weight: 300;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
+
+.fullscreen-section.visible .about-intro p,
+.fullscreen-section.visible .contact-header p {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.fullscreen-section.visible .about-intro p:nth-of-type(1) {
+    transition-delay: 0.5s;
+}
+
+.fullscreen-section.visible .about-intro p:nth-of-type(2) {
+    transition-delay: 0.65s;
+}
+
+.fullscreen-section.visible .contact-header p {
+    transition-delay: 0.3s;
+}
+
 
 a {
     color: #00ff99;
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, transform 0.3s ease;
+    /* Removed global transform: translateY(-2px) to avoid conflict */
     font-weight: 500;
+    position: relative;
 }
 
 a:hover {
     color: #ffffff;
 }
 
+/* General link underline effect - can be overridden for specific buttons */
+a:not(.cta-button):not(.project-link):not(.contact-link)::after {
+    /* More specific selector to exclude buttons/specific links */
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    display: block;
+    margin-top: 2px;
+    right: 0;
+    background: #ffffff;
+    transition: width 0.3s ease;
+}
+
+a:not(.cta-button):not(.project-link):not(.contact-link):hover::after {
+    width: 100%;
+    left: 0;
+    right: auto;
+}
+
 .highlight {
     color: #00ff99;
     font-weight: 900;
+    display: inline-block;
 }
 
 .green-accent {
@@ -164,7 +262,18 @@ a:hover {
     color: #ffffff;
     z-index: 1001;
     user-select: none;
+    opacity: 0;
+    transform: translateY(-30px);
+    animation: siteLogoFadeIn 1s ease-out 1.5s forwards;
 }
+
+@keyframes siteLogoFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 
 .orb-menu {
     position: fixed;
@@ -183,6 +292,36 @@ a:hover {
     gap: 1.5rem;
 }
 
+.orb-list li {
+    opacity: 0;
+    transform: translateX(30px);
+    animation: orbFadeIn 0.5s ease-out forwards;
+}
+
+.orb-list li:nth-child(1) {
+    animation-delay: 1.8s;
+}
+
+.orb-list li:nth-child(2) {
+    animation-delay: 1.9s;
+}
+
+.orb-list li:nth-child(3) {
+    animation-delay: 2.0s;
+}
+
+.orb-list li:nth-child(4) {
+    animation-delay: 2.1s;
+}
+
+
+@keyframes orbFadeIn {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 .orb {
     display: block;
     width: 18px;
@@ -192,6 +331,7 @@ a:hover {
     border-radius: 50%;
     position: relative;
     transition: all 0.3s ease;
+    /* Reverted to original transition for orbs */
     box-shadow: 0 0 4px rgba(0, 255, 153, 0.4), 0 0 8px rgba(0, 255, 153, 0.2);
 }
 
@@ -206,8 +346,10 @@ a:hover {
     left: 50%;
     transform: translate(-50%, -50%);
     transition: all 0.3s ease;
+    /* Reverted to original transition */
 }
 
+/* Reverted orb hover to original design */
 .orb:hover {
     transform: scale(1.3);
     background-color: rgba(0, 255, 153, 0.35);
@@ -220,17 +362,36 @@ a:hover {
 }
 
 .orb.active {
-    background-color: rgba(0, 255, 153, 0.5);
-    transform: scale(1.45);
-    box-shadow: 0 0 12px #00ff99, 0 0 25px #00ff99, 0 0 35px rgba(0, 255, 153, 0.7);
+    /* Kept enhanced active state, as it wasn't requested for revert */
+    background-color: #00ff99;
+    transform: scale(1.6);
+    box-shadow: 0 0 15px #00ff99, 0 0 30px #00ff99, 0 0 45px rgba(0, 255, 153, 0.8), 0 0 0 4px rgba(0, 255, 153, 0.3);
+    animation: activeOrbPulse 1.5s infinite ease-in-out;
 }
 
 .orb.active .orb-inner {
-    background-color: #00ff99;
-    transform: translate(-50%, -50%) scale(1.25);
+    background-color: #0A0A0A;
+    transform: translate(-50%, -50%) scale(1.0);
 }
 
+
+@keyframes activeOrbPulse {
+    0% {
+        box-shadow: 0 0 15px #00ff99, 0 0 30px #00ff99, 0 0 45px rgba(0, 255, 153, 0.8), 0 0 0 3px rgba(0, 255, 153, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 20px #00ff99, 0 0 40px #00ff99, 0 0 60px rgba(0, 255, 153, 1), 0 0 0 6px rgba(0, 255, 153, 0.1);
+    }
+
+    100% {
+        box-shadow: 0 0 15px #00ff99, 0 0 30px #00ff99, 0 0 45px rgba(0, 255, 153, 0.8), 0 0 0 3px rgba(0, 255, 153, 0.3);
+    }
+}
+
+
 .orb[data-tooltip]::before {
+    /* Reverted tooltip style slightly */
     content: attr(data-tooltip);
     position: absolute;
     top: 50%;
@@ -238,8 +399,11 @@ a:hover {
     transform: translateY(-50%) translateX(-12px);
     padding: 0.5rem 0.9rem;
     background-color: #1a1a1a;
+    /* Original background */
     color: #00ff99;
+    /* Original text color */
     border: 1px solid #00ff99;
+    /* Original border */
     border-radius: 5px;
     font-size: 0.8rem;
     font-weight: 600;
@@ -249,12 +413,16 @@ a:hover {
     transition: all 0.3s ease;
     pointer-events: none;
     z-index: 1002;
+    /* box-shadow: 0 5px 15px rgba(0,0,0,0.2); */
+    /* Removed explicit shadow from here */
 }
 
 .orb[data-tooltip]:hover::before {
     opacity: 1;
     visibility: visible;
     transform: translateY(-50%) translateX(0px);
+    right: 150%;
+    /* Kept for better positioning from prev refinement */
 }
 
 /* --- Fullscreen Section Base --- */
@@ -268,8 +436,9 @@ a:hover {
     position: relative;
     overflow: hidden;
     opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s cubic-bezier(0.645, 0.045, 0.355, 1), transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+    transform: translateY(50px);
+    /* Default reveal transform */
+    transition: opacity 1s cubic-bezier(0.19, 1, 0.22, 1), transform 1s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .fullscreen-section.visible {
@@ -289,42 +458,40 @@ a:hover {
     bottom: 2rem;
     left: 50%;
     transform: translateX(-50%);
-    color: rgba(255, 255, 255, 0.4);
-    font-size: 1.5rem;
-    animation: bounceUpDown 2s infinite;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 1.8rem;
+    animation: bounceUpDownSmooth 2.5s infinite ease-in-out;
     z-index: 3;
+    transition: opacity 0.4s ease, color 0.3s ease;
 }
 
 .scroll-down-indicator:hover {
     color: #00ff99;
+    animation-play-state: paused;
 }
 
-@keyframes bounceUpDown {
+@keyframes bounceUpDownSmooth {
 
     0%,
-    20%,
-    50%,
-    80%,
     100% {
         transform: translateX(-50%) translateY(0);
+        opacity: 0.3;
     }
 
-    40% {
-        transform: translateX(-50%) translateY(-10px);
-    }
-
-    60% {
-        transform: translateX(-50%) translateY(-5px);
+    50% {
+        transform: translateX(-50%) translateY(-15px);
+        opacity: 1;
     }
 }
 
+
 .scroll-down-indicator.section-scroll {
-    color: rgba(0, 255, 153, 0.3);
+    color: rgba(0, 255, 153, 0.4);
 }
 
 /* --- HERO SECTION --- */
 .hero-section {
-    background: radial-gradient(ellipse at center, rgba(18, 18, 18, 0.8) 0%, #0A0A0A 70%);
+    background: radial-gradient(ellipse at center, rgba(20, 20, 20, 0.85) 0%, #0A0A0A 75%);
     text-align: center;
 }
 
@@ -339,42 +506,92 @@ a:hover {
     z-index: 2;
 }
 
+.hero-title,
+.hero-subtitle,
+.hero-section .cta-button {
+    /* Target specifically for hero */
+    opacity: 0;
+}
+
 .hero-title {
-    margin-bottom: 1rem;
-    text-shadow: 0 0 15px rgba(0, 255, 153, 0.2);
-    animation: fadeInDown 1s ease-out;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 20px rgba(0, 255, 153, 0.25);
+    animation: heroTextReveal 1.2s cubic-bezier(0.165, 0.84, 0.44, 1) 0.3s forwards;
 }
 
 .hero-subtitle {
     font-size: clamp(1.1rem, 2.5vw, 1.6rem);
     color: #b0b0b0;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2.8rem;
     font-weight: 400;
-    animation: fadeInUp 1s ease-out 0.4s;
-    animation-fill-mode: backwards;
+    animation: heroTextReveal 1.2s cubic-bezier(0.165, 0.84, 0.44, 1) 0.6s forwards;
 }
 
 .cta-button {
+    /* Base CTA styling, can be used elsewhere too */
     display: inline-block;
     background-color: #00ff99;
     color: #0A0A0A;
-    padding: 0.9rem 2.2rem;
+    padding: 1rem 2.5rem;
     border-radius: 50px;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
+    letter-spacing: 1.2px;
+    transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
     border: 2px solid #00ff99;
-    animation: fadeInUp 1s ease-out 0.8s;
-    animation-fill-mode: backwards;
-    box-shadow: 0 5px 15px rgba(0, 255, 153, 0.15);
+    box-shadow: 0 8px 20px rgba(0, 255, 153, 0.2);
+    position: relative;
+    overflow: hidden;
 }
 
+.hero-section .cta-button {
+    /* Specific animation for hero CTA */
+    animation: heroTextReveal 1.2s cubic-bezier(0.165, 0.84, 0.44, 1) 0.9s forwards;
+}
+
+.cta-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+
 .cta-button:hover {
-    transform: translateY(-5px) scale(1.03);
-    box-shadow: 0 10px 25px rgba(0, 255, 153, 0.3);
+    transform: translateY(-6px) scale(1.05);
+    box-shadow: 0 12px 30px rgba(0, 255, 153, 0.35);
+    /* background-color: #00ff99; Kept original behavior of transparent on hover from first CSS */
     background-color: transparent;
+    /* From initial CSS */
     color: #00ff99;
+    /* From initial CSS */
+}
+
+.cta-button:hover::before {
+    left: 100%;
+}
+
+/* Remove underline specifically from hero cta button */
+.hero-section .cta-button:hover::after {
+    width: 0 !important;
+    display: none !important;
+}
+
+
+@keyframes heroTextReveal {
+    0% {
+        opacity: 0;
+        transform: translateY(40px) skewY(3deg);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) skewY(0deg);
+    }
 }
 
 .hero-visual {
@@ -390,9 +607,36 @@ a:hover {
 .abstract-shape {
     position: absolute;
     border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-    opacity: 0.05;
-    animation: morphFloat 15s infinite ease-in-out alternate;
+    opacity: 0;
+    transform: scale(0.5);
+    animation: morphFloat 15s infinite ease-in-out alternate, shapeAppear 1s ease-out forwards;
+    will-change: transform, border-radius;
 }
+
+@keyframes shapeAppear {
+    to {
+        opacity: 0.05;
+        transform: scale(1);
+    }
+}
+
+.hero-visual .shape1 {
+    animation-delay: 0.2s;
+}
+
+.hero-visual .shape2 {
+    animation-delay: 0.4s;
+}
+
+.hero-visual .shape3 {
+    animation-delay: 0.6s;
+}
+
+.hero-visual .shape4 {
+    animation-delay: 0.8s;
+    opacity: 0.03;
+}
+
 
 .shape1 {
     width: 400px;
@@ -400,7 +644,7 @@ a:hover {
     background-color: #00ff99;
     top: 5%;
     left: 10%;
-    animation-duration: 18s;
+    animation-duration: 18s, 1s;
 }
 
 .shape2 {
@@ -409,8 +653,8 @@ a:hover {
     background-color: #ffffff;
     bottom: 10%;
     right: 5%;
-    animation-duration: 15s;
-    animation-delay: -3s;
+    animation-duration: 15s, 1s;
+    animation-delay: -3s, 0.4s;
 }
 
 .shape3 {
@@ -419,8 +663,8 @@ a:hover {
     background-color: #8A2BE2;
     top: 40%;
     left: 60%;
-    animation-duration: 20s;
-    animation-delay: -6s;
+    animation-duration: 20s, 1s;
+    animation-delay: -6s, 0.6s;
 }
 
 .shape4 {
@@ -429,9 +673,8 @@ a:hover {
     background-color: #00ff99;
     bottom: 30%;
     left: 25%;
-    opacity: 0.03;
-    animation-duration: 12s;
-    animation-delay: -9s;
+    animation-duration: 12s, 1s;
+    animation-delay: -9s, 0.8s;
 }
 
 @keyframes morphFloat {
@@ -441,8 +684,8 @@ a:hover {
     }
 
     50% {
-        border-radius: 50% 50% 30% 70% / 60% 40% 60% 40%;
-        transform: translateY(-25px) translateX(15px) rotate(15deg) scale(1.05);
+        border-radius: 55% 45% 40% 60% / 65% 35% 65% 35%;
+        transform: translateY(-30px) translateX(20px) rotate(20deg) scale(1.1);
     }
 
     100% {
@@ -459,7 +702,7 @@ a:hover {
 .about-section .section-content-wrapper {
     display: flex;
     flex-direction: column;
-    gap: 3rem;
+    gap: 3.5rem;
 }
 
 .about-intro {
@@ -469,12 +712,12 @@ a:hover {
 }
 
 .about-intro .section-title {
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
 }
 
 .about-intro p {
     font-size: clamp(1.05rem, 2vw, 1.2rem);
-    line-height: 1.8;
+    line-height: 1.85;
     color: #d0d0d0;
 }
 
@@ -487,82 +730,96 @@ a:hover {
 
 @media (min-width: 800px) {
     .timeline-skills-container {
-        grid-template-columns: 1.5fr 1fr;
-        gap: 4rem;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 4.5rem;
     }
 }
 
 .timeline {
     position: relative;
-    padding-left: 25px;
-    border-left: 2px solid rgba(0, 255, 153, 0.2);
+    padding-left: 30px;
+    border-left: 3px solid rgba(0, 255, 153, 0.15);
 }
 
 .timeline-item {
     position: relative;
-    margin-bottom: 2.5rem;
+    margin-bottom: 3rem;
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
 
 .timeline-item::before {
     content: '';
     position: absolute;
-    left: -34px;
+    left: -42px;
     top: 5px;
-    width: 12px;
-    height: 12px;
-    background-color: #0A0A0A;
-    border: 2px solid #00ff99;
+    width: 16px;
+    height: 16px;
+    background-color: #101010;
+    border: 3px solid #00ff99;
     border-radius: 50%;
     z-index: 1;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
 }
 
 .timeline-item:hover::before {
     background-color: #00ff99;
-    transform: scale(1.2);
+    transform: scale(1.3);
+    box-shadow: 0 0 10px #00ff99, 0 0 20px rgba(0, 255, 153, 0.5);
 }
 
 .timeline-year {
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
     color: #00ff99;
-    font-size: 1rem;
-    margin-bottom: 0.3rem;
+    font-size: 1.05rem;
+    margin-bottom: 0.5rem;
 }
 
 .timeline-content {
-    font-size: 0.95rem;
-    color: #b0b0b0;
-    line-height: 1.6;
+    font-size: 1rem;
+    color: #b8b8b8;
+    line-height: 1.65;
 }
 
 .skills-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.8rem;
+    gap: 1rem;
 }
 
 .skill-tag {
-    background-color: rgba(0, 255, 153, 0.05);
-    border: 1px solid rgba(0, 255, 153, 0.2);
+    background-color: rgba(0, 255, 153, 0.08);
+    border: 1px solid rgba(0, 255, 153, 0.25);
     color: #00ff99;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 25px;
+    font-size: 0.95rem;
     font-weight: 500;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    opacity: 0;
+    transform: scale(0.8) translateY(10px);
+}
+
+.skill-tag.visible {
+    opacity: 1;
+    transform: scale(1) translateY(0);
 }
 
 .skill-tag:hover {
+    /* Reverted to original skill tag hover from first CSS for consistency with that section */
     background-color: rgba(0, 255, 153, 0.2);
     color: #fff;
     transform: translateY(-2px);
+    /* Keep slight lift */
     box-shadow: 0 3px 10px rgba(0, 255, 153, 0.1);
 }
 
 /* --- PROJECTS SECTION --- */
 .projects-section {
     background: #0A0A0A;
+    /* Original BG for project section */
 }
 
 .project-wrapper {
@@ -570,27 +827,48 @@ a:hover {
 }
 
 .projects-section .section-title {
-    margin-bottom: 3rem;
+    margin-bottom: 3.5rem;
 }
 
 .project-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    /* Original minmax */
     gap: 2.5rem;
+    /* Original gap */
 }
 
 .project-card {
     background-color: #131313;
+    /* Original card BG */
     border: 1px solid rgba(0, 255, 153, 0.1);
+    /* Original border */
     border-radius: 8px;
+    /* Original radius */
     padding: 2rem 1.8rem;
+    /* Original padding */
     display: flex;
     flex-direction: column;
+    /* Original transition from first CSS file */
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     min-height: 280px;
+    /* Original min height */
+    position: relative;
+    /* Keep for potential future use, but remove gradient border */
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
 }
 
+.project-card.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* Removed ::before for animated gradient border to simplify and stick to requests */
+
 .project-card:hover {
+    /* Reverted to original project card hover effect */
     transform: translateY(-10px) scale(1.02);
     border-color: rgba(0, 255, 153, 0.5);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), 0 0 15px rgba(0, 255, 153, 0.1);
@@ -599,25 +877,51 @@ a:hover {
 .project-year {
     font-family: 'Montserrat', sans-serif;
     font-size: 0.85rem;
+    /* Original font size */
     color: rgba(255, 255, 255, 0.5);
+    /* Original color */
     margin-bottom: 0.5rem;
+    /* Original margin */
     letter-spacing: 0.5px;
+    /* Original spacing */
 }
 
 .project-title {
     font-size: clamp(1.3rem, 2.5vw, 1.6rem);
+    /* Original size */
     color: #00ff99;
     margin-bottom: 0.8rem;
+    /* Original margin */
     font-weight: 700;
+    line-height: 1.3;
+    /* Kept from refinement for readability */
 }
 
 .project-description {
     font-size: 0.95rem;
+    /* Original size */
     color: #b0b0b0;
+    /* Original color - FIXED VISIBILITY */
     line-height: 1.7;
+    /* Original line height */
     margin-bottom: 1.5rem;
+    /* Original margin */
     flex-grow: 1;
+    opacity: 1;
+    /* Ensure visible */
+    transform: none;
+    /* Ensure no transform hides it if it was a child of an animated p */
 }
+
+/* If description is a p tag directly inside visible project card, apply its own animation */
+.project-card.visible .project-description {
+    opacity: 1;
+    /* Ensures the p style animation of opacity from 0 doesn't affect it if nested */
+    transform: translateY(0);
+    transition: opacity 0.5s ease-out 0.3s, transform 0.5s ease-out 0.3s;
+    /* Slight delay for it to appear after card */
+}
+
 
 .project-link {
     display: inline-block;
@@ -625,31 +929,46 @@ a:hover {
     color: #00ff99;
     text-transform: uppercase;
     letter-spacing: 0.8px;
+    /* Original spacing */
     font-size: 0.85rem;
+    /* Original size */
     align-self: flex-start;
     border: 1px solid rgba(0, 255, 153, 0.3);
+    /* Original border */
     padding: 0.5rem 1rem;
+    /* Original padding */
     border-radius: 20px;
+    /* Original radius */
+    transition: all 0.3s ease;
+    /* Original transition */
 }
+
 
 .project-link i {
     margin-left: 0.5rem;
+    /* Original margin */
     transition: transform 0.3s ease;
+    /* Original transition */
 }
 
 .project-link:hover {
+    /* Reverted to original project link hover */
     background-color: rgba(0, 255, 153, 0.1);
     border-color: #00ff99;
     color: #fff;
+    /* transform: scale(1.05) translateY(-2px); removed for original simpler hover */
 }
 
 .project-link:hover i {
     transform: translateX(4px);
+    /* Original icon movement */
 }
 
 /* --- CONTACT SECTION --- */
 .contact-section {
-    background: linear-gradient(rgba(10, 10, 10, 0.9), rgba(10, 10, 10, 1)), repeating-linear-gradient(45deg, rgba(0, 255, 153, 0.01), rgba(0, 255, 153, 0.01) 2px, transparent 2px, transparent 10px);
+    background: linear-gradient(rgba(10, 10, 10, 0.95), rgba(10, 10, 10, 1)),
+        repeating-linear-gradient(45deg, rgba(0, 255, 153, 0.005), rgba(0, 255, 153, 0.005) 1px, transparent 1px, transparent 8px),
+        repeating-linear-gradient(-45deg, rgba(0, 255, 153, 0.005), rgba(0, 255, 153, 0.005) 1px, transparent 1px, transparent 8px);
 }
 
 .contact-wrapper {
@@ -659,36 +978,37 @@ a:hover {
 
 .contact-header {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 3.5rem;
 }
 
 .contact-header .section-title {
-    margin-bottom: 0.8rem;
+    margin-bottom: 1rem;
 }
 
 .contact-header p {
-    font-size: 1.1rem;
-    color: #b0b0b0;
+    font-size: 1.15rem;
+    color: #b8b8b8;
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
+    line-height: 1.7;
 }
 
 .contact-details-form {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 3.5rem;
     align-items: start;
 }
 
 @media(min-width: 768px) {
     .contact-details-form {
-        grid-template-columns: 1fr 1.3fr;
-        gap: 4rem;
+        grid-template-columns: 1fr 1.4fr;
+        gap: 4.5rem;
     }
 
     .contact-info-block {
-        padding-top: 1rem;
+        padding-top: 1.5rem;
     }
 }
 
@@ -696,36 +1016,66 @@ a:hover {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    /* Original gap */
 }
 
 .contact-link {
     font-size: 1.05rem;
+    /* Original size */
     color: #c0c0c0;
+    /* Original color */
     display: flex;
     align-items: center;
     transition: color 0.3s ease, transform 0.3s ease;
+    /* Original transition */
+    opacity: 0;
+    transform: translateX(-20px);
 }
+
+.contact-link.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
 
 .contact-link i {
     font-size: 1.6rem;
+    /* Original size */
     color: #00ff99;
     margin-right: 1rem;
+    /* Original margin */
     width: 30px;
+    /* Original width */
     text-align: center;
     transition: transform 0.3s ease;
+    /* Original icon transition */
 }
 
 .contact-link:hover {
+    /* Original hover */
     color: #00ff99;
     transform: translateX(5px);
 }
 
 .contact-link:hover i {
+    /* Original icon hover */
     transform: scale(1.1) rotate(-5deg);
+}
+
+.contact-form-container {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out 0.6s, transform 0.8s ease-out 0.6s;
+}
+
+.fullscreen-section.visible .contact-form-container {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .contact-form-container input,
 .contact-form-container textarea {
+    /* Reverted to original form styling */
     width: 100%;
     padding: 1.1rem;
     margin-bottom: 1rem;
@@ -745,38 +1095,64 @@ a:hover {
 
 .contact-form-container input:focus,
 .contact-form-container textarea:focus {
+    /* Original focus */
     outline: none;
     border-color: #00ff99;
     background-color: #101010;
     box-shadow: 0 0 15px rgba(0, 255, 153, 0.15);
+    /* transform: scale(1.01); removed */
 }
 
 .contact-form-container textarea {
     resize: vertical;
     min-height: 100px;
+    /* Original min height */
 }
 
 .contact-form-container .cta-button {
     width: 100%;
     margin-top: 0.5rem;
+    /* Original margin */
+    padding: 0.9rem 2.2rem;
+    /* Match initial CTA for consistency, from hero original */
+}
+
+.contact-form-container .cta-button:hover {
+    /* Ensure consistency with initial CTA hover */
+    background-color: transparent;
+    color: #00ff99;
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 0 10px 25px rgba(0, 255, 153, 0.3);
 }
 
 /* --- Footer --- */
 .main-footer {
     text-align: center;
     padding: 2.5rem 1rem;
+    /* Original padding */
     background-color: #080808;
     border-top: 1px solid #1a1a1a;
 }
 
 .main-footer p {
     font-size: 0.9rem;
+    /* Original size */
     color: #777;
     margin: 0;
     font-weight: 400;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: footerFadeIn 1s ease-out 0.5s forwards;
 }
 
-/* --- Animations & Base Keyframes --- */
+@keyframes footerFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Base Animation Keyframes --- */
 @keyframes fadeInDown {
     from {
         opacity: 0;
@@ -801,6 +1177,7 @@ a:hover {
     }
 }
 
+
 /* --- Media Queries --- */
 @media (max-width: 992px) {
     h1 {
@@ -813,6 +1190,7 @@ a:hover {
 
     .fullscreen-section {
         padding: 4rem 3rem 2rem 5%;
+        /* Original padding from first CSS */
     }
 }
 
@@ -847,29 +1225,39 @@ a:hover {
     .timeline-skills-container {
         grid-template-columns: 1fr;
         gap: 2.5rem;
+        /* Original gap */
     }
 
     .timeline {
         padding-left: 20px;
+        /* Original padding */
     }
 
     .timeline-item::before {
         left: -29px;
+        width: 12px;
+        height: 12px;
+        border-width: 2px;
     }
+
+    /* Original before */
 
     .project-grid {
         grid-template-columns: 1fr;
         gap: 2rem;
+        /* Original gap */
     }
 
     .project-card {
         min-height: auto;
         padding: 1.5rem;
+        /* Original padding */
     }
 
     .contact-details-form {
         grid-template-columns: 1fr;
         gap: 2.5rem;
+        /* Original gap */
     }
 
     .contact-header p {
@@ -878,15 +1266,16 @@ a:hover {
 
     .fullscreen-section {
         padding: 4rem 2.8rem 2rem 5%;
+        /* Original padding */
     }
+
     .cursor-dot,
     .cursor-outline {
         display: none;
     }
-    
+
     body {
         cursor: auto;
-            /* Show default system cursor */
     }
 }
 
@@ -908,10 +1297,12 @@ a:hover {
 
     .orb-list {
         gap: 0.9rem;
+        /* Original gap */
     }
 
     .fullscreen-section {
         padding: 3rem 2.5rem 1.5rem 5%;
+        /* Original padding */
     }
 
     .hero-title {
@@ -922,10 +1313,17 @@ a:hover {
         font-size: clamp(1rem, 4vw, 1.2rem);
     }
 
+    /* Original CTA padding and font-size from first CSS */
     .cta-button {
         padding: 0.8rem 1.8rem;
         font-size: 0.9rem;
     }
+
+    .contact-form-container .cta-button {
+        padding: 0.8rem 1.8rem;
+        font-size: 0.9rem;
+    }
+
 
     h2.section-title {
         font-size: clamp(1.8rem, 6vw, 2.5rem);
@@ -938,14 +1336,17 @@ a:hover {
     .skill-tag {
         padding: 0.4rem 0.8rem;
         font-size: 0.85rem;
+        /* Original */
     }
 
     .project-title {
         font-size: 1.2rem;
+        /* Original */
     }
 
     .project-description {
         font-size: 0.9rem;
+        /* Original */
     }
 
     .contact-link {
@@ -959,9 +1360,11 @@ a:hover {
     .contact-form-container input,
     .contact-form-container textarea {
         padding: 0.9rem;
+        /* Original */
     }
 }
 
 main section:last-child {
     padding-bottom: 80px;
+    /* Original padding */
 }
